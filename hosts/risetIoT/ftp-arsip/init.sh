@@ -4,24 +4,14 @@ apt update
 apt install vsftpd -y
 
 # SETUP FTP SERVER
-# Buat 2 user untuk akses FTP (mahasiswa dan admin)
-useradd -m -s /bin/bash mahasiswa
-echo "mahasiswa:123" | chpasswd
-
-useradd -m -s /bin/bash admin
-echo "admin:123" | chpasswd
+# Buat 1 user untuk akses FTP
+useradd -m -s /bin/bash risetIoT
+echo "risetIoT:123" | chpasswd
 
 # Buat file arsip.txt yang bisa diakses
-mkdir -p /home/ftp-data
-echo "Ini adalah data arsip yang dapat diakses melalui FTP server risetIoT" > /home/ftp-data/arsip.txt
-chmod 755 /home/ftp-data
-chmod 644 /home/ftp-data/arsip.txt
-
-# Copy arsip.txt ke home directory masing-masing user
-cp /home/ftp-data/arsip.txt /home/mahasiswa/
-cp /home/ftp-data/arsip.txt /home/admin/
-chown mahasiswa:mahasiswa /home/mahasiswa/arsip.txt
-chown admin:admin /home/admin/arsip.txt
+echo "ARDHI GANTENG BANGET" > /home/risetIoT/arsip.txt
+chown risetIoT:risetIoT /home/risetIoT/arsip.txt
+chmod 644 /home/risetIoT/arsip.txt
 
 # Konfigurasi vsftpd
 cat > /etc/vsftpd.conf << EOF
@@ -67,10 +57,20 @@ userlist_file=/etc/vsftpd.userlist
 userlist_deny=NO
 EOF
 
-# Buat user list file
+# Buat user list file (hanya user risetIoT yang diizinkan)
 cat > /etc/vsftpd.userlist << EOF
-mahasiswa
-admin
+risetIoT
+EOF
+
+# Konfigurasi TCP Wrappers untuk membatasi akses hanya dari Mahasiswa dan Admin
+# Asumsikan IP Mahasiswa: 10.30.30.1, IP Admin: 10.10.10.1
+cat > /etc/hosts.allow << EOF
+vsftpd: 10.30.30.1
+vsftpd: 10.10.10.1
+EOF
+
+cat > /etc/hosts.deny << EOF
+vsftpd: ALL
 EOF
 
 # Restart service
