@@ -11,4 +11,4 @@ hydra -l student -P small.txt ssh://10.20.20.2
 # in riset
 dd if=/dev/urandom of=rahasia.enc bs=1M count=1
 # in mahasiswa
-curl -O 10.20.10.2:4000/small.txt
+curl -O 10.20.30.3:4000/small.txt
